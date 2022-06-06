@@ -1,0 +1,8 @@
+.vscode/
+node_modules/
+build/
+config.local.js
+package-lock.json
+# macOS
+.DS_Store
+dist/
