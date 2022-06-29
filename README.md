@@ -15,6 +15,10 @@ yarn build
 yarn start
 ```
 
+## Develop with Twilio Locally
+
+export twilio `account_sid` and `auth_token` as env variables
+
 ## Twilio Example Response
 
 ```
