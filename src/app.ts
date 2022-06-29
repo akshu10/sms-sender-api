@@ -1,8 +1,7 @@
 import express, { Express } from 'express';
 import cors, { CorsOptions } from 'cors';
 
-//TODO: Complete this
-// import messengerServiceRoutes from ''
+import messengerServiceRoutes from './sms-service/router';
 import statusController from './status-controller';
 
 console.log('Loading express');
@@ -37,7 +36,7 @@ const createApp = (): Express => {
 
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
-  // app.use('/messenger', messengerServiceRoutes);
+  app.use(messengerServiceRoutes);
   app.get('/status', statusController);
 
   return app;
