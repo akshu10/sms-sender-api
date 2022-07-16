@@ -25,7 +25,8 @@ const sendSMS = async (request: SMSRequest): Promise<void> => {
     const twilioResponse = await client.messages.create({
       messagingServiceSid: secret.messagingServiceSid,
       to: request.to,
-      body: request.body
+      body: request.body,
+      statusCallback: 'https://yc2jn4v3veonzjg7ernzcfr5ee0qwzih.lambda-url.us-east-1.on.aws/'
     });
 
     if (twilioResponse.status === 'accepted' && twilioResponse.sid) {
