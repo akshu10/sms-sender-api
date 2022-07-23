@@ -19,12 +19,10 @@
   "scripts": {
     "clean": "rm -rf node_modules/",
     "build": "tsc",
-    "start": "cross-env TZ=UTC PORT=8090 NODE_ENV=development nodemon -e ts,js,json --exec node -r ts-node/register --inspect=:9228 src/server.ts",
-    "init:db:test": "docker-compose --file ./db/docker-compose.yml up --detach && cross-env TZ=UTC NODE_ENV=unittest ts-node ./db/scripts/create-database.ts",
-    "test": "cross-env NODE_ENV=unittest jest --verbose --detectOpenHandles --config=jest.config.js",
-    "test:coverage": "yarn test --coverage",
+    "start": "node -r ts-node/register scripts/index.ts",
     "lint": "eslint \"**/*.{ts,js}\"",
-    "format": "prettier --write \"**/*.{ts,js,json,md,yml}\""
+    "format": "prettier --write \"**/*.{ts,js,json,md,yml}\"",
+    "package": "rm -f build.zip && cd build && zip -qq -r ../build.zip **"
   },
   "husky": {
     "hooks": {
@@ -83,11 +81,8 @@
     "jest-node-exports-resolver": "~1.1.2",
     "jest-when": "~3.2.1",
     "lint-staged": "~10.5.4",
-    "nodemon": "~1.19.4",
     "prettier": "~2.3.0",
     "source-map-support": "~0.5.19",
-    "supertest": "~6.2.1",
-    "ts-jest": "~27.0.7",
     "ts-node": "~8.8.1",
     "typescript": "~4.2.0",
     "uuid-validate": "~0.0.3"

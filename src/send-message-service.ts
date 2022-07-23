@@ -1,6 +1,6 @@
 import { Twilio } from 'twilio';
 
-import getSecret from '../../lib/secrets-manager';
+import getSecret from './secrets-manager';
 
 export interface SMSRequest {
   to: string;
@@ -11,7 +11,7 @@ const secretName = 'twilio/auth';
 
 const sendSMS = async (request: SMSRequest): Promise<void> => {
   try {
-    console.log('Send SMS Service');
+    console.log('Send SMS Request', request);
     const secret = await getSecret(secretName);
 
     if (!secret) {
@@ -33,7 +33,7 @@ const sendSMS = async (request: SMSRequest): Promise<void> => {
 
     // const twilioResponse = { status: '', sid: '' };
     if (twilioResponse.status === 'accepted' && twilioResponse.sid) {
-      console.log('Here');
+      console.log('Success');
       return;
     } else {
       throw new Error('Internal Server Error');
