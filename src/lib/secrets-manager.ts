@@ -1,35 +1,17 @@
-import AWS from 'aws-sdk';
+import { SecretsManager } from 'aws-sdk';
+import { GetSecretValueResponse } from 'aws-sdk/clients/secretsmanager';
 
 const region = 'us-east-1';
 
-export class SecretsManager {
-  client: AWS.SecretsManager;
+const client = new SecretsManager({
+  region
+});
 
-  constructor(
-    client = new AWS.SecretsManager({
-      region
-    })
-  ) {
-    this.client = client;
-  }
+const getSecret = async (secretName: string): Promise<string | undefined> => {
+  console.log('Getting secret');
+  const secret = await client.getSecretValue({ SecretId: secretName }).promise();
 
-  getSecret = async (secretName: string): Promise<Record<string, string> | undefined> => {
-    console.log('Getting secret');
-    return new Promise((resolve, reject) => {
-      this.client.getSecretValue(
-        { SecretId: secretName },
-        (err: AWS.AWSError, data: AWS.SecretsManager.GetSecretValueResponse) => {
-          if (err) {
-            reject(err);
-          } else if ('SecretString' in data) {
-            resolve(JSON.parse(data.SecretString || '{}'));
-          } else {
-            reject(new Error('Secret is not a string'));
-          }
-        }
-      );
-    });
-  };
-}
+  return secret.SecretString;
+};
 
-export default new SecretsManager();
+export default getSecret;

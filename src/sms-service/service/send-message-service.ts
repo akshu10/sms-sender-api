@@ -1,6 +1,6 @@
 import { Twilio } from 'twilio';
 
-import secretsManager from '../../lib/secrets-manager';
+import getSecret from '../../lib/secrets-manager';
 
 export interface SMSRequest {
   to: string;
@@ -12,24 +12,28 @@ const secretName = 'twilio/auth';
 const sendSMS = async (request: SMSRequest): Promise<void> => {
   try {
     console.log('Send SMS Service');
-    const secret = await secretsManager.getSecret(secretName);
-
-    console.log(secret, 'secret');
+    const secret = await getSecret(secretName);
 
     if (!secret) {
       throw new Error('Twilio secret not found');
     }
 
-    const client = new Twilio(secret.accountSid, secret.authToken);
+    const json = JSON.parse(secret);
+
+    console.log(json, 'SECRET');
+
+    const client = new Twilio(json.ACCOUNT_SID, json.AUTH_TOKEN);
 
     const twilioResponse = await client.messages.create({
-      messagingServiceSid: secret.messagingServiceSid,
+      messagingServiceSid: json.MESSAGING_SERVICE_SID,
       to: request.to,
       body: request.body,
       statusCallback: 'https://yc2jn4v3veonzjg7ernzcfr5ee0qwzih.lambda-url.us-east-1.on.aws/'
     });
 
+    // const twilioResponse = { status: '', sid: '' };
     if (twilioResponse.status === 'accepted' && twilioResponse.sid) {
+      console.log('Here');
       return;
     } else {
       throw new Error('Internal Server Error');
