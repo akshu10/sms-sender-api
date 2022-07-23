@@ -1,5 +1,4 @@
 import { SecretsManager } from 'aws-sdk';
-import { GetSecretValueResponse } from 'aws-sdk/clients/secretsmanager';
 
 const region = 'us-east-1';
 
