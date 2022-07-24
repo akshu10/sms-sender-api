@@ -31,7 +31,7 @@ const sendSMS = async (request: SMSRequest) => {
       messagingServiceSid: json.MESSAGING_SERVICE_SID,
       to: request.to,
       body: request.body,
-      statusCallback: 'https://hjzbbwuyuuufnsdz54fqa3fazy0eqtxp.lambda-url.us-east-1.on.aws/'
+      statusCallback: 'https://yc2jn4v3veonzjg7ernzcfr5ee0qwzih.lambda-url.us-east-1.on.aws/'
     });
 
     // const twilioResponse = { status: '', sid: '' };
