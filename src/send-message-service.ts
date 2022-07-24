@@ -3,14 +3,17 @@ import { Twilio } from 'twilio';
 import getSecret from './secrets-manager';
 
 export interface SMSRequest {
-  to: string;
-  body: string;
+  to: string | null;
+  body: string | null;
 }
 
 const secretName = 'twilio/auth';
 
-const sendSMS = async (request: SMSRequest): Promise<void> => {
+const sendSMS = async (request: SMSRequest) => {
   try {
+    if (request.body === null || request.to === null) {
+      throw new Error('Null Pointer');
+    }
     console.log('Send SMS Request', request);
     const secret = await getSecret(secretName);
 
@@ -34,7 +37,13 @@ const sendSMS = async (request: SMSRequest): Promise<void> => {
     // const twilioResponse = { status: '', sid: '' };
     if (twilioResponse.status === 'accepted' && twilioResponse.sid) {
       console.log('Success');
-      return;
+      return {
+        statusCode: 204,
+        headers: {
+          'Content-type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://sms-sender-vue-app.s3-website-us-east-1.amazonaws.com/'
+        }
+      };
     } else {
       throw new Error('Internal Server Error');
     }

@@ -22,7 +22,8 @@
     "start": "node -r ts-node/register scripts/index.ts",
     "lint": "eslint \"**/*.{ts,js}\"",
     "format": "prettier --write \"**/*.{ts,js,json,md,yml}\"",
-    "package": "rm -f build.zip && cd build && zip -qq -r ../build.zip **"
+    "package": "rm -f build.zip && cd build && zip -qq -r ../build.zip **",
+    "postbuild": "cp package.json build/package.json && cd build && yarn install --production --no-lockfile"
   },
   "husky": {
     "hooks": {

@@ -1,20 +1,21 @@
 import sendSMS from './send-message-service';
 import { SMSRequest } from './send-message-service';
-export interface LambdaEvent {
-  headers: Record<string, string>;
-  path: string;
-  body: Record<string, string>;
-}
 
+interface Event {
+  rawPath: string;
+  requestContext: Record<string, unknown>;
+  body: string;
+}
 interface Status {
   name: string;
   status: string;
 }
 
-const handler = async (event: LambdaEvent) => {
+const handler = async (event: Event) => {
+  console.log('Handler', event);
+  console.log(event.rawPath, 'PATH');
 
-  console.log('Handler');
-  if (event.path === '/status') {
+  if (event.rawPath === '/status') {
     const status: Status = {
       name: 'sms-sender-api',
       status: 'ok'
@@ -24,18 +25,35 @@ const handler = async (event: LambdaEvent) => {
       statusCode: 200,
       headers: {
         'Content-type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-        body: JSON.stringify(status)
-      }
+        'Access-Control-Allow-Origin': 'http://sms-sender-vue-app.s3-website-us-east-1.amazonaws.com/'
+      },
+      body: status
     };
-  } else if (event.path === '/message') {
+  } else if (event.rawPath === '/message') {
+    if (event.body) {
+      const bodyJSON = JSON.parse(event.body);
+      console.log(bodyJSON, 'bodyJSON');
 
-    console.log('Here');
-    const request: SMSRequest = {
-      to: event.body.to,
-      body: event.body.body
-    };
-    await sendSMS(request);
+      const request: SMSRequest = {
+        to: bodyJSON.to,
+        body: bodyJSON.body
+      };
+      const response = await sendSMS(request);
+
+      return response;
+    } else {
+      const error = {
+        message: 'Bad Request'
+      };
+      return {
+        statusCode: 400,
+        headers: {
+          'Content-type': 'application/json',
+          'Access-Control-Allow-Origin': 'http://sms-sender-vue-app.s3-website-us-east-1.amazonaws.com/'
+        },
+        body: error
+      };
+    }
   }
 };
 
